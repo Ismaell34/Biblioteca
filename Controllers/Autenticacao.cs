@@ -8,9 +8,9 @@ namespace Biblioteca.Controllers
     {
         public static void CheckLogin(Controller controller)
         {   
-            if(string.IsNullOrEmpty(controller.HttpContext.Session.GetString("user")))
+            if(string.IsNullOrEmpty(controller.HttpContext.Session.GetString("idUsuario")))
             {
-                controller.Request.HttpContext.Response.Redirect("/Home/Login");
+                controller.Request.HttpContext.Response.Redirect("/Home/Index");
             }
         }
     }

@@ -1,53 +1,93 @@
-@model ICollection<Emprestimo>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<Emprestimo>
 @{
-    ViewData["Title"] = "Listagem de Empréstimos";
+    ViewData["Title"] = "Listagem de Emprestimos";
 }
 
 <div class="row">
     <div class="col-md-12">
-    <form class="form-inline" method="POST">
-        <div class="form-group mb-2">
-            <select name="TipoFiltro" class="form-control">
-                <option value="Usuario">Usuário</option>
-                <option value="Livro">Livro</option>
-            </select>
-        </div>
-        <div class="form-group mb-2 mx-sm-3">
-            <input type="text" placeholder="Filtro" name="Filtro" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
-    </form>
+        <form class="form-inline" method="POST">
+            <div class="form-group mb-2">
+                <select name="TipoFiltro" class="form-control">
+                    <option value="Usuario">Usuário</option>
+                    <option value="Livro">Livro</option>
+                </select>
+            </div>
+            <div class="form-group mb-2 mx-sm-3">
+                <input type="text" placeholder="Filtro" name="Filtro" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
+        </form>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <table > 
+        <table class="table table-striped">
             <thead>
-                <tr><th>Id</th>
-                <th>Usuario</th>
-                <th>Data Empréstimo</th>
-                <th>Data Devolução</th>
-                <th>Livro</th>
-                <th>Autor</th>
-                <th></th>
+                <tr>
+                    <th>Id</th>
+                    <th>Usuário</th>
+                    <th>Data Empréstimo</th>
+                    <th>Data Devolução</th>
+                    <th>Livro</th>
+                    <th>Autor</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(Emprestimo e in Model)
+                @foreach (var emprestimo in Model)
                 {
-                <tr>
-                    <td>@e.Id</td>
-                    <td>@e.NomeUsuario</td>
-                    <td>@e.DataEmprestimo.ToString("dd/MM/yyyy")</td>
-                    <td>@e.DataDevolucao.ToString("dd/MM/yyyy")</td>
-                    <td>@e.Livro.Titulo</td>
-                    <td>@e.Livro.Autor</td>
-                    <td><a href="/Emprestimo/Edicao/@e.Id">Editar</a></td>
-                </tr>
+                    var hoje = DateTime.Today;
+                    var isAtrasado = emprestimo.DataDevolucao < hoje;
+
+                    <tr class="@(isAtrasado ? "table-danger" : "table-success")">
+                        <td>@emprestimo.Id</td>
+                        <td>@emprestimo.NomeUsuario</td>
+                        <td>@emprestimo.DataEmprestimo.ToString("dd/MM/yyyy")</td>
+                        <td>@emprestimo.DataDevolucao.ToString("dd/MM/yyyy")</td>
+                        <td>@emprestimo.Livro.Titulo</td>
+                        <td>@emprestimo.Livro.Autor</td>
+                        <td><a href="/Emprestimo/Edicao/@emprestimo.Id">Editar</a></td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="Páginas">
+            <ul class="pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Listagem", new { page = 1 })">Primeira</a>
+                    </li>
+                }
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Listagem", new { page = Model.PageNumber - 1 })">Anterior</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Listagem", new { page = Model.PageNumber + 1 })">Próxima</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Listagem", new { page = Model.PageCount })">Última</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        @Html.PagedListPager(Model, page => Url.Action("Listagem", new { page }))
+    </div>
+    
+</div>

@@ -30,20 +30,6 @@ namespace Biblioteca.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Login(string login, string senha)
-        {
-            if(login != "admin" || senha != "123")
-            {
-                ViewData["Erro"] = "Senha inválida";
-                return View();
-            }
-            else
-            {
-                HttpContext.Session.SetString("user", "admin");
-                return RedirectToAction("Index");
-            }
-        }
 
         public IActionResult Privacy()
         {

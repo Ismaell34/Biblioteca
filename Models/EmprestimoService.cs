@@ -6,43 +6,50 @@ namespace Biblioteca.Models
 {
     public class EmprestimoService 
     {
+
+        private readonly BibliotecaContext _context;
+
+        public EmprestimoService(DbContextOptions<BibliotecaContext> options)
+        {
+            _context = new BibliotecaContext(options);
+        }
         public void Inserir(Emprestimo e)
         {
-            using(BibliotecaContext bc = new BibliotecaContext())
+            
             {
-                bc.Emprestimos.Add(e);
-                bc.SaveChanges();
+                _context.Emprestimos.Add(e);
+                _context.SaveChanges();
             }
         }
 
         public void Atualizar(Emprestimo e)
         {
-            using(BibliotecaContext bc = new BibliotecaContext())
+            
             {
-                Emprestimo emprestimo = bc.Emprestimos.Find(e.Id);
+                Emprestimo emprestimo = _context.Emprestimos.Find(e.Id);
                 emprestimo.NomeUsuario = e.NomeUsuario;
                 emprestimo.Telefone = e.Telefone;
                 emprestimo.LivroId = e.LivroId;
                 emprestimo.DataEmprestimo = e.DataEmprestimo;
                 emprestimo.DataDevolucao = e.DataDevolucao;
 
-                bc.SaveChanges();
+                _context.SaveChanges();
             }
         }
 
         public ICollection<Emprestimo> ListarTodos(FiltrosEmprestimos filtro)
         {
-            using(BibliotecaContext bc = new BibliotecaContext())
+           
             {
-                return bc.Emprestimos.Include(e => e.Livro).ToList();
+                return _context.Emprestimos.Include(e => e.Livro).ToList();
             }
         }
 
         public Emprestimo ObterPorId(int id)
         {
-            using(BibliotecaContext bc = new BibliotecaContext())
+            
             {
-                return bc.Emprestimos.Find(id);
+                return _context.Emprestimos.Find(id);
             }
         }
     }
