@@ -1,0 +1,26 @@
+@model Usuario;
+<h1>Editar Usuários</h1>
+
+<form method="POST" asp-action="Editar">
+     
+    <input type="hidden" asp-for="idUsuario">
+    <p>
+        <p>Nome:</p>
+        <input asp-for="nome">
+
+        <p>User:</p>
+        <input asp-for="user">
+
+        <p>Senha:</p>
+        <input asp-for="senha">
+
+        <input type="submit" value="Editar">
+    </p>
+
+
+
+
+
+
+
+</form>
